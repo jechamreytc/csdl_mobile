@@ -223,49 +223,69 @@ class _HomePageState extends State<HomePage> {
 
       // Construct the request body
       Map<String, dynamic> jsonData = {
-        "users_username": _usernameController.text,
-        "users_password": _passwordController.text
+        "username": _usernameController.text,
+        "password": _passwordController.text
       };
 
       Map<String, String> requestBody = {
-        "operation": "userLogin",
+        "operation": "login",
         "json": jsonEncode(jsonData),
       };
 
       // Make the HTTP POST request
       var response = await http.post(url, body: requestBody);
-      var res = jsonDecode(response.body);
-      // Check the user level and handle navigation
-      if (res['users_level'] == 2) {
-        int advisorId = res['users_id'];
-        // If the user is an advisor, navigate to Advisor screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Advisor(
-                    advisor_id: advisorId,
-                  )),
-        );
-      } else if (res['users_level'] == 1) {
-        // If the user is a student, retrieve and pass the student_id
-        int userId = res['users_id'];
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Student(
-              student_id: userId, // Pass the userId to the Student widget
-            ),
-          ),
-        );
+      if (response.statusCode == 200) {
+        var res = jsonDecode(response.body);
+
+        // Check if login was successful
+        if (res != 0 && res is Map<String, dynamic>) {
+          // Check if the user is a student or an advisor
+          if (res.containsKey('supM_id')) {
+            // Navigate to the Advisor screen
+            int advisorId = res['supM_id'];
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Advisor(
+                        advisor_id: advisorId,
+                      )),
+            );
+          } else if (res.containsKey('stud_id')) {
+            // Navigate to the Student screen
+            int userId = res['stud_id'];
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Student(
+                  student_id: userId, // Pass the userId to the Student widget
+                ),
+              ),
+            );
+          } else {
+            // Show a snack bar if the response format is unexpected
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Invalid response from server")),
+            );
+          }
+        } else {
+          // Show a snack bar if the login credentials are invalid
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Invalid username or password")),
+          );
+        }
       } else {
-        // Show a snack bar if the login credentials are invalid
+        // Show a snack bar if there is an issue with the server response
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Invalid username or password")),
+          SnackBar(content: Text("Server error: ${response.statusCode}")),
         );
       }
     } catch (e) {
-      print("ERROR: $e"); // Print the error for debugging
+      // Print the error for debugging and show a snack bar for the user
+      print("ERROR: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred: $e")),
+      );
     }
   }
 }

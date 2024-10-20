@@ -18,15 +18,15 @@ class Student extends StatefulWidget {
 
 class _StudentState extends State<Student> {
   String student_id_number = "";
-  String student_first_name = "";
-  String student_last_name = ""; // Fixed typo
+  String student_fullname = "";
   String duty_room_number = "";
   String duty_building_number = "";
   String duty_subject_code = "";
   String duty_subject_name = "";
-  String duty_advisor_first_name = "";
-  String duty_advisor_last_name = "";
+  String duty_advisor_full_name = "";
   String duty_time = "";
+  String day = "";
+  String scheduled_time = "";
   bool isLoading = true; // Loading state
 
   @override
@@ -61,14 +61,14 @@ class _StudentState extends State<Student> {
                               CircleAvatar(
                                 radius: 40,
                                 backgroundImage: const AssetImage(
-                                    'assets/profile.jpg'), // Placeholder image
+                                    'assets/images/sakana.jpg'), // Placeholder image
                               ),
                               const SizedBox(
                                   height:
                                       10), // Space between image and advisor name
                               // Advisor Name
                               Text(
-                                'Advisor: $duty_advisor_first_name $duty_advisor_last_name',
+                                'Advisor: $duty_advisor_full_name',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.white, // Text color to white
@@ -86,7 +86,7 @@ class _StudentState extends State<Student> {
                               children: [
                                 // Student Name and ID
                                 Text(
-                                  '$student_first_name $student_last_name',
+                                  '$student_fullname',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ class _StudentState extends State<Student> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Duty Day: ', // Update this line with actual value
+                                  'Duty Day: $day', // Update this line with actual value
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white, // Text to white
@@ -143,7 +143,7 @@ class _StudentState extends State<Student> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Duty Time: duty time ni siya', // Update this line
+                                  'Duty Time: $scheduled_time', // Update this line
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white, // Text to white
@@ -258,11 +258,12 @@ class _StudentState extends State<Student> {
   }
 
   // Method to fetch student details
+// Method to fetch student details
   void getStudentsDetailsAndStudentDutyAssign() async {
     try {
-      var url = Uri.parse("${SessionStorage.url}user.php");
+      var url = Uri.parse("${SessionStorage.url}CSDL.php");
       Map<String, dynamic> jsonData = {
-        "users_id": widget.student_id,
+        "assign_stud_id": widget.student_id,
       };
       Map<String, String> requestBody = {
         "operation": "getStudentsDetailsAndStudentDutyAssign",
@@ -278,30 +279,26 @@ class _StudentState extends State<Student> {
 
         if (res != 0) {
           setState(() {
-            student_id_number = res['personal_id_number'] ?? ""; // Null safety
-            student_first_name = res['personal_first_name'] ?? "";
-            student_last_name = res['personal_last_name'] ?? "";
-            duty_room_number = res['rooms_number'] ?? "";
-            duty_building_number = res['building_name'] ?? "";
-            duty_subject_code = res['subjects_code'] ?? "";
-            duty_subject_name = res['subjects_name'] ?? "";
-            duty_advisor_first_name = res['advisor_first_name'] ?? "";
-            duty_advisor_last_name = res['advisor_last_name'] ?? "";
+            student_id_number = res['stud_school_id'] ?? ""; // Null safety
+            student_fullname = res['StudentFullname'] ?? "";
+            duty_room_number = res['room_number'] ?? "";
+            duty_building_number = res['build_name'] ?? "";
+            duty_subject_code = res['subject_code'] ?? "";
+            duty_subject_name = res['subject_name'] ?? "";
+            duty_advisor_full_name = res['AdvisorFullname'] ?? "";
+            day = res['day_name'] ?? "";
+            scheduled_time = res['DutyTime'] ?? "";
 
-            // Parse duty_hours as double
-            double dutyHours = double.tryParse(res['duty_hours']) ?? 0.0;
+            // Parse dutyH_name as integer (total seconds)
+            int dutySeconds = int.tryParse(res['dutyH_hours'].toString()) ?? 0;
 
-            // Convert hours to seconds
-            int totalSeconds = (dutyHours * 3600).toInt();
+            // Calculate hours and minutes
+            int hours = dutySeconds ~/ 3600; // Get whole hours
+            int minutes = (dutySeconds % 3600) ~/ 60; // Remaining minutes
 
-            // Calculate hours, minutes, and seconds
-            int hours = totalSeconds ~/ 3600; // Get whole hours
-            int minutes = (totalSeconds % 3600) ~/ 60; // Remaining minutes
-            int seconds = totalSeconds % 60; // Remaining seconds
-
-            // Format duty_time as "HH:MM:SS"
+            // Format duty_time as "HH:MM"
             duty_time =
-                "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+                "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
 
             isLoading = false; // Set loading to false once data is fetched
           });
