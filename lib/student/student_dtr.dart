@@ -52,8 +52,8 @@ class _StudentDtrState extends State<StudentDtr> {
           padding:
               const EdgeInsets.all(20.0), // Maintain padding around the content
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Aligns children to the start (left)
+            crossAxisAlignment: CrossAxisAlignment
+                .start, // Alignsgit children to the start (left)
             children: [
               // Card for School Year
               _buildCard(
