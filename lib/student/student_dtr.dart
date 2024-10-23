@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 class StudentDtr extends StatefulWidget {
   final int student_id;
   const StudentDtr({
-    Key? key,
+    super.key,
     required this.student_id,
-  }) : super(key: key);
+  });
 
   @override
   _StudentDtrState createState() => _StudentDtrState();
@@ -57,11 +57,11 @@ class _StudentDtrState extends State<StudentDtr> {
             children: [
               // Card for School Year
               _buildCard(
-                'School Year: ${studentDtr.isNotEmpty ? studentDtr[0]['dtr_sy'] : 'N/A'}',
+                'School Year: ${studentDtr.isNotEmpty ? studentDtr[0]['dtr_school_year'] : 'N/A'}',
               ),
               // Card for Semester
               _buildCard(
-                'Semester: ${studentDtr.isNotEmpty ? studentDtr[0]['dtr_sem'] : 'N/A'}',
+                'Semester: ${studentDtr.isNotEmpty ? studentDtr[0]['dtr_semester'] : 'N/A'}',
               ),
               // Create Data Table
               createDatatable(),
@@ -154,7 +154,7 @@ class _StudentDtrState extends State<StudentDtr> {
       if (res != 0) {
         setState(() {
           studentDtr = res;
-          duty_hours = res[0]['dutyH_hours'] ?? 0;
+          duty_hours = res[0]['assign_hours'] ?? 0;
         });
       }
     } catch (e) {

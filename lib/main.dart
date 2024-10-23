@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'HK SMS',
                     style: TextStyle(
                       fontSize: 80,
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   // Subtitle (HK Scholars Management System)
                   Text(
                     'HK Scholars',
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white.withOpacity(0.8),
                     ),
                   ),
-                  SizedBox(height: 1),
+                  const SizedBox(height: 1),
                   // Subtitle (HK Scholars Management System)
                   Text(
                     'Management System',
@@ -81,12 +81,12 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white.withOpacity(0.8),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   // Login Card Container with Rounded Corners and Shadow
                   Container(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.black
                           .withOpacity(0.7), // Dark background for the card
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.3),
-                          offset: Offset(0, 5),
+                          offset: const Offset(0, 5),
                           blurRadius: 15,
                         ),
                       ],
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         // Title (Sign in)
-                        Text(
+                        const Text(
                           'Sign in',
                           style: TextStyle(
                             fontSize: 30,
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         // Subtitle (Sign in your account)
                         Text(
                           'Sign in your account',
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white.withOpacity(0.8),
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         // Login field
                         TextFormField(
                           controller: _usernameController,
@@ -127,14 +127,14 @@ class _HomePageState extends State<HomePage> {
                             filled: true,
                             fillColor: Colors.grey[700],
                             labelText: 'Login',
-                            labelStyle: TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         // Password field
                         TextFormField(
                           controller: _passwordController,
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                             filled: true,
                             fillColor: Colors.grey[700],
                             labelText: 'Password',
-                            labelStyle: TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -164,9 +164,9 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           ),
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         // Remember me checkbox
                         // Row(
                         //   mainAxisAlignment: MainAxisAlignment.start,
@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                         //     ),
                         //   ],
                         // ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         // Login Button
                         SizedBox(
                           width: double.infinity, // Full width button
@@ -191,13 +191,13 @@ class _HomePageState extends State<HomePage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   Colors.green, // Green color as in the design
-                              padding: EdgeInsets.symmetric(vertical: 15),
+                              padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             child:
-                                Text('Login', style: TextStyle(fontSize: 18)),
+                                const Text('Login', style: TextStyle(fontSize: 18)),
                             onPressed: () {
                               login();
                             },
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Footer (Powered by something)
                 ],
               ),

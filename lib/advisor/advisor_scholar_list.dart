@@ -29,11 +29,11 @@ class _AdvisorScholarListState extends State<AdvisorScholarList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scholar List'),
+        title: const Text('Scholar List'),
       ),
       body: Center(
         child: isLoading
-            ? CircularProgressIndicator() // Show a loading indicator while data is being fetched
+            ? const CircularProgressIndicator() // Show a loading indicator while data is being fetched
             : scholars.isNotEmpty
                 ? createListView()
                 : Text(errorMessage.isNotEmpty
@@ -57,10 +57,10 @@ class _AdvisorScholarListState extends State<AdvisorScholarList> {
           child: Card(
             child: ListTile(
               title: Text(
-                "${scholars[index]['personal_full_name']}", // Use first and last name
+                "${scholars[index]['Fullname']}", // Use first and last name
               ),
               subtitle: Text(
-                'Contact: ${scholars[index]['personal_contact_number']}',
+                'Contact: ${scholars[index]['stud_contact_number']}',
               ),
             ),
           ),
@@ -72,9 +72,9 @@ class _AdvisorScholarListState extends State<AdvisorScholarList> {
   // Function to fetch assigned scholars
   void getAssignedScholars() async {
     try {
-      var url = Uri.parse("${SessionStorage.url}user.php");
+      var url = Uri.parse("${SessionStorage.url}CSDL.php");
       Map<String, dynamic> jsonData = {
-        "users_id": widget.advisor_id, // Adjust this ID as needed
+        "assign_supM_id": widget.advisor_id, // Adjust this ID as needed
       };
 
       Map<String, String> requestBody = {
@@ -119,15 +119,15 @@ class _AdvisorScholarListState extends State<AdvisorScholarList> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(scholar['personal_full_name']),
+          title: Text(scholar['Fullname']),
           content: Text(
-            'Contact: ${scholar['personal_contact_number']}\n'
-            'Email: ${scholar['personal_email_address']}\n'
-            'Address: ${scholar['personal_address']}',
+            'Contact: ${scholar['stud_contact_number']}\n'
+            'Email: ${scholar['stud_email']}\n'
+            'Address: ${scholar['room_number']}',
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Close'),
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

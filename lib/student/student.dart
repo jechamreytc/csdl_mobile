@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 class Student extends StatefulWidget {
   final int student_id;
   const Student({
-    Key? key,
+    super.key,
     required this.student_id,
-  }) : super(key: key);
+  });
 
   @override
   _StudentState createState() => _StudentState();
@@ -27,6 +27,7 @@ class _StudentState extends State<Student> {
   String duty_time = "";
   String day = "";
   String scheduled_time = "";
+  String duty_hours = ""; // Change to String for display
   bool isLoading = true; // Loading state
 
   @override
@@ -58,9 +59,9 @@ class _StudentState extends State<Student> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               // Profile picture
-                              CircleAvatar(
+                              const CircleAvatar(
                                 radius: 40,
-                                backgroundImage: const AssetImage(
+                                backgroundImage: AssetImage(
                                     'assets/images/sakana.jpg'), // Placeholder image
                               ),
                               const SizedBox(
@@ -86,7 +87,7 @@ class _StudentState extends State<Student> {
                               children: [
                                 // Student Name and ID
                                 Text(
-                                  '$student_fullname',
+                                  student_fullname,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -149,6 +150,14 @@ class _StudentState extends State<Student> {
                                     color: Colors.white, // Text to white
                                   ),
                                 ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Assigned Hours: $duty_hours', // Display assigned hours here
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white, // Text to white
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -164,9 +173,9 @@ class _StudentState extends State<Student> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(
+                                const Text(
                                   'Time Rendered: ', // Add value if needed
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white, // Text to white
                                   ),
@@ -230,7 +239,7 @@ class _StudentState extends State<Student> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -245,8 +254,8 @@ class _StudentState extends State<Student> {
                               ),
                             );
                           },
-                          child:
-                              Text("Show DTR", style: TextStyle(fontSize: 18)),
+                          child: const Text("Show DTR",
+                              style: TextStyle(fontSize: 18)),
                         ),
                       ),
                     ],
@@ -258,7 +267,6 @@ class _StudentState extends State<Student> {
   }
 
   // Method to fetch student details
-// Method to fetch student details
   void getStudentsDetailsAndStudentDutyAssign() async {
     try {
       var url = Uri.parse("${SessionStorage.url}CSDL.php");
@@ -288,9 +296,11 @@ class _StudentState extends State<Student> {
             duty_advisor_full_name = res['AdvisorFullname'] ?? "";
             day = res['day_name'] ?? "";
             scheduled_time = res['DutyTime'] ?? "";
+            duty_hours = res['assign_hours']?.toString() ??
+                ""; // Ensure this is assigned correctly
 
             // Parse dutyH_name as integer (total seconds)
-            int dutySeconds = int.tryParse(res['dutyH_hours'].toString()) ?? 0;
+            int dutySeconds = int.tryParse(res['assign_hours'].toString()) ?? 0;
 
             // Calculate hours and minutes
             int hours = dutySeconds ~/ 3600; // Get whole hours
@@ -303,32 +313,22 @@ class _StudentState extends State<Student> {
             isLoading = false; // Set loading to false once data is fetched
           });
         } else {
-          // Handle case where response is 0 (not found or error)
+          print("No data found");
           setState(() {
-            isLoading = false; // Set loading to false
+            isLoading = false; // Set loading to false if no data
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Student not found or an error occurred.")),
-          );
         }
       } else {
-        // Handle network error
+        print("Error fetching data: ${response.statusCode}");
         setState(() {
-          isLoading = false; // Set loading to false
+          isLoading = false; // Set loading to false on error
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text("Failed to load data: ${response.statusCode}")),
-        );
       }
     } catch (e) {
+      print("Exception occurred: $e");
       setState(() {
-        isLoading = false; // Set loading to false
+        isLoading = false; // Set loading to false on exception
       });
-      print("ERROR: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("An error occurred: $e")),
-      );
     }
   }
 }

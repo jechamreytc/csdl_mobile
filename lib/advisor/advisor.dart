@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 class Advisor extends StatefulWidget {
   final int advisor_id;
   const Advisor({
-    Key? key,
+    super.key,
     required this.advisor_id,
-  }) : super(key: key);
+  });
 
   @override
   _AdvisorState createState() => _AdvisorState();
@@ -24,7 +24,7 @@ class _AdvisorState extends State<Advisor> {
           backgroundColor: Colors.blue.shade800,
         ),
         drawer: advisorDrawer(context),
-        body: Center(
+        body: const Center(
           child: Column(
             children: [
               Text('Advisor'),
@@ -45,31 +45,31 @@ class _AdvisorState extends State<Advisor> {
             DrawerHeader(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Text("Advisor", style: TextStyle(color: Colors.white)),
+                child: const Text("Advisor", style: TextStyle(color: Colors.white)),
               ),
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.qr_code_scanner,
                 color: Colors.white,
               ),
-              title: Text("QR Scanner", style: TextStyle(color: Colors.white)),
+              title: const Text("QR Scanner", style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AdvisorQrScanner(),
+                    builder: (context) => const AdvisorQrScanner(),
                   ),
                 );
               },
             ),
             ListTile(
-              leading: Icon(
+              leading: const Icon(
                 Icons.list,
                 color: Colors.white,
               ),
               title:
-                  Text("Scholar List", style: TextStyle(color: Colors.white)),
+                  const Text("Scholar List", style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                   context,
