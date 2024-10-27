@@ -151,13 +151,6 @@ class _StudentState extends State<Student> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(
-                                  'Assigned Hours: $duty_hours', // Display assigned hours here
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white, // Text to white
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -296,11 +289,12 @@ class _StudentState extends State<Student> {
             duty_advisor_full_name = res['AdvisorFullname'] ?? "";
             day = res['day_name'] ?? "";
             scheduled_time = res['DutyTime'] ?? "";
-            duty_hours = res['assign_hours']?.toString() ??
+            duty_hours = res['assign_duty_hours']?.toString() ??
                 ""; // Ensure this is assigned correctly
 
             // Parse dutyH_name as integer (total seconds)
-            int dutySeconds = int.tryParse(res['assign_hours'].toString()) ?? 0;
+            int dutySeconds =
+                int.tryParse(res['assign_duty_hours'].toString()) ?? 0;
 
             // Calculate hours and minutes
             int hours = dutySeconds ~/ 3600; // Get whole hours

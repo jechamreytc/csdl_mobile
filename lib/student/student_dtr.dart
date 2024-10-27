@@ -154,7 +154,7 @@ class _StudentDtrState extends State<StudentDtr> {
       if (res != 0) {
         setState(() {
           studentDtr = res;
-          duty_hours = res[0]['assign_hours'] ?? 0;
+          duty_hours = res[0]['assign_duty_hours'] ?? 0;
         });
       }
     } catch (e) {

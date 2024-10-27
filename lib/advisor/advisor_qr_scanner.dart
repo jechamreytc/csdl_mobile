@@ -13,6 +13,7 @@ class AdvisorQrScanner extends StatefulWidget {
 
 class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
   Barcode? _barcode;
+  bool _attendanceMarked = false; // Flag to track attendance status
 
   Widget _buildBarcode(Barcode? value) {
     if (value == null) {
@@ -33,14 +34,42 @@ class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
   void _handleBarcode(BarcodeCapture barcodes) {
     if (mounted) {
       setState(() {
+        // Get the first barcode from the scanned data
         _barcode = barcodes.barcodes.firstOrNull;
       });
 
-      // Call the attendance function after a successful scan
-      if (_barcode != null) {
-        studentsAttendence();
+      // Show the confirmation dialog after a successful scan only if not marked
+      if (_barcode != null && !_attendanceMarked) {
+        _showConfirmationDialog(); // Show confirmation dialog
       }
     }
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Attendance'),
+          content: const Text('Do you want to mark attendance?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                studentsAttendance(); // Call the function to send attendance
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -51,7 +80,7 @@ class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
       body: Stack(
         children: [
           MobileScanner(
-            onDetect: _handleBarcode,
+            onDetect: _handleBarcode, // Set the onDetect callback
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -59,7 +88,7 @@ class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
               height: 100,
               color: Colors.black.withOpacity(0.4),
               child: Center(
-                child: _buildBarcode(_barcode),
+                child: _buildBarcode(_barcode), // Display scanned barcode
               ),
             ),
           ),
@@ -68,36 +97,41 @@ class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
     );
   }
 
-  void studentsAttendence() async {
-    if (_barcode == null) return; // Safety check for null barcode
+  void studentsAttendance() async {
+    if (_barcode == null) return;
 
     try {
-      var url = Uri.parse("${SessionStorage.url}user.php");
+      var url = Uri.parse("${SessionStorage.url}CSDL.php");
       Map<String, dynamic> jsonData = {
-        "students_id_number": _barcode!.displayValue,
+        "stud_school_id": _barcode!.displayValue, // Use scanned barcode value
       };
       Map<String, String> requestBody = {
         "operation": "studentsAttendance",
-        "json": jsonEncode(jsonData),
+        "json": jsonEncode(jsonData), // Convert jsonData to JSON
       };
 
       var response = await http.post(url, body: requestBody);
 
-      // Check response status code
       if (response.statusCode == 200) {
-        var res = jsonDecode(response.body);
-        if (res != 0) {
+        var res = response.body; // Directly use the response body
+        if (res == '1') {
+          // Attendance marked successfully
           print("Time in Success");
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Attendance marked successfully!")),
           );
+          setState(() {
+            _attendanceMarked = true; // Mark attendance as done
+          });
+          Navigator.pop(context); // Exit the scanner
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Failed to mark attendance.")),
+            const SnackBar(
+              content: Text("Failed to mark attendance."),
+            ),
           );
         }
       } else {
-        // Handle unexpected response
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${response.statusCode}")),
         );
@@ -106,7 +140,8 @@ class _AdvisorQrScannerState extends State<AdvisorQrScanner> {
       print("ERROR: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text("An error occurred while marking attendance.")),
+          content: Text("An error occurred while marking attendance."),
+        ),
       );
     }
   }
